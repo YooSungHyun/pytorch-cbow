@@ -7,12 +7,14 @@ class Net(nn.Module):
     def __init__(self, vocab_size, embedding_size):
         super(Net, self).__init__()
         self.embeddings = nn.Embedding(vocab_size, embedding_size)
+        self.dropout = nn.Dropout(p=0.25)
         self.out_embeddings = nn.Embedding(vocab_size, embedding_size)
         self.linear = nn.Linear(embedding_size, vocab_size)
 
     def forward(self, input_ids, labels, negative_samples):
         # 문맥 단어들의 임베딩을 조회
-        context_embeds = self.embeddings(input_ids)
+        # frequency sampling 대신 드롭아웃으로 그냥 운좋게 비슷한 효과를 낼 수 있지 않을까?
+        context_embeds = self.dropout(self.embeddings(input_ids))
         # 타겟 단어의 임베딩 조회
         target_embeds = self.out_embeddings(labels)
         # 네거티브 샘플의 임베딩 조회
