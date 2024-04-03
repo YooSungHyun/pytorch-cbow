@@ -145,6 +145,50 @@
           "--do_normalize",
           "--label_names=ctc_linear_labels"
       ]
+  },
+  {
+      "name": "train_rnnt",
+      "type": "python",
+      "request": "launch",
+      "module": "torch.distributed.launch",
+      "cwd": "${workspaceFolder}/temp_workspace/asr_proj/stt/RNNTransducer/scripts",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "subProcess": true,
+      "env": {
+          "WANDB_DISABLED": "true",
+          "CUDA_VISIBLE_DEVICES": "1",
+          "OMP_NUM_THREADS": "8",
+      },
+      "args": [
+          "--nproc_per_node=1",
+          "${workspaceFolder}/temp_workspace/asr_proj/stt/RNNTransducer/train.py",
+          "--pl_data_dir=/home/bart/temp_workspace/asr_proj/stt/aihub_datasets_arrow/fine-tuning/final-logmelspect-KsponSpeech-42maru-normal-20",
+          "--output_dir=../../online_model/",
+          "--num_shards=20",
+          "--model_config=/home/bart/temp_workspace/asr_proj/stt/RNNTransducer/config/config.json",
+          "--vocab_path=/home/bart/temp_workspace/asr_proj/stt/RNNTransducer/config/vocab.json",
+          "--seed=42",
+          "--num_proc=12",
+          "--per_device_train_batch_size=1",
+          "--train_batch_drop_last=false",
+          "--per_device_eval_batch_size=1",
+          "--eval_batch_drop_last=false",
+          "--val_check_interval=0.001",
+          "--accumulate_grad_batches=16",
+          "--max_epochs=10",
+          "--log_every_n_steps=50",
+          "--accelerator=gpu",
+          "--strategy=ddp",
+          "--replace_sampler_ddp=false",
+          "--devices=1",
+          "--precision=32",
+          "--val_on_cpu=true",
+          "--auto_scale_batch_size=false",
+          "--learning_rate=0.00001",
+          "--max_lr=0.001",
+          "--weight_decay=0.0001"
+      ]
   }
 ]
 ```
